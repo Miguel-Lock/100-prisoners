@@ -21,13 +21,19 @@ Extra credit:
      - Ex: exompile a tabl of values for 100, 200, 300, ..., 2000
  - Anything else I can think of in C and clearly related to the project    
 
+
+______
+cout << "How many times would you like to simulate the 100 prisoner problem?\n>"
+cout << "do you want more to try a custom number of prisoners? (y/n)\n>"
+if y:
+cout << "How many prisoners are we talking about?\n>"
 */
 void initialize_room() {
     // this would initialize a room
     // room array would be shared via reference
 }
 
-bool prisoner_finds() {
+bool find_number(int id) {
     // takes the room stuff
     // passes back array of 51 where arr[0] is number of prisoners on his loop
     // this only runs if prisoner_finds == 1
