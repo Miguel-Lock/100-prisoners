@@ -11,7 +11,7 @@ Version: 1.0
 #include <stdio.h>
 #include <stdbool.h> //for boolean
 
-int NUM_PRISONERS = 100;
+const int NUM_PRISONERS = 100;
 
 /*
 Functions:
@@ -64,9 +64,10 @@ bool prisoner_finds_number(int id) {
 
 bool all_find_numbers() {
     int num_success = 0; //count of numbeer of prisoners that found their numbers
+
     int prisoners_remaining[NUM_PRISONERS];
     
-    for (i=-; i < NUM_PRISONERS; i++) {
+    for (int i=0; i < NUM_PRISONERS; i++) {
         prisoners_remaining[i] = i;
     }
 
@@ -83,7 +84,7 @@ int main() {
 
     // int num_prisoners = userinput, must be multiple of 100. bool stop = num_prisoners mod 100, if stop = 0 we have a valid value.
 
-    for (i=0; i < iterations, i++) {
+    for (int i=0; i < iterations; i++) {
         bool prisoners_are_free;
         // initialize room[] size NUM_PRISONERS
         int room[NUM_PRISONERS];
