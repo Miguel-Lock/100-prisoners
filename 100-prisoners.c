@@ -1,6 +1,17 @@
+/*************************
+Program Name: 100-prisoners.c
+Programmer: Miguel Lock
+
+Class: CSC-310
+Instructor: Dr. John Coleman
+Date: 9/13/23
+Version: 1.0
+*************************/
+
 #include <stdio.h>
 #include <stdbool.h> //for boolean
 
+int NUM_PRISONERS = 100;
 
 /*
 Functions:
@@ -28,24 +39,58 @@ cout << "do you want more to try a custom number of prisoners? (y/n)\n>"
 if y:
 cout << "How many prisoners are we talking about?\n>"
 */
+
 void initialize_room() {
-    // this would initialize a room
-    // room array would be shared via reference
+    // this would initialize a room90 size num_prisoners
+    /*
+    // pass room[] into function by reference
+    for i in num_prisoners:
+        room[i] = i;
+    shuffle(room[])
+    return void;
+    */
 }
 
-bool find_number(int id) {
+bool prisoner_finds_number(int id) {
+    int steps = 0;
+
+    // if steps > 50, return 0
+
     // takes the room stuff
     // passes back array of 51 where arr[0] is number of prisoners on his loop
     // this only runs if prisoner_finds == 1
     return 0; // would return 1 if it works
 }
 
+bool all_find_numbers() {
+    int num_success = 0; //count of numbeer of prisoners that found their numbers
+    int prisoners_remaining[NUM_PRISONERS];
+    
+    for (i=-; i < NUM_PRISONERS; i++) {
+        prisoners_remaining[i] = i;
+    }
+
+    //prisoners_remaining will be fed into prisoner_finds_number, 
+    //all prisoners who find their number will be set to 0. That is how we
+    //determine which prisoner we should check for next. Lateron, might 
+
+    //something with prisoner_finds_number()
+    // if num_successful_prisoner > 50: return true
+}
 
 int main() {
-    char name[10] = "Miguel";
-    int age = 18;
+    int iterations = 1;
 
-    printf("Hello, %s. You are %i years old.", name, age);
+    // int num_prisoners = userinput, must be multiple of 100. bool stop = num_prisoners mod 100, if stop = 0 we have a valid value.
+
+    for (i=0; i < iterations, i++) {
+        bool prisoners_are_free;
+        // initialize room[] size NUM_PRISONERS
+        int room[NUM_PRISONERS];
+        initialize_room(); //pass in room[] by reference
+
+        bool prisonsers_are_free = all_find_numbers();
+    }
 
     return 0;
 }
