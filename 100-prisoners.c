@@ -10,8 +10,7 @@ Version: 1.0
 
 #include <stdio.h>
 #include <stdbool.h> //for boolean
-
-const int NUM_PRISONERS = 100;
+#define NUM_PRISONERS 100
 
 /*
 Functions:
