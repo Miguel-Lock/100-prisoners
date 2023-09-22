@@ -87,7 +87,7 @@ bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, in
 
 bool all_find_numbers(int *room) {
     int num_success = 0; //count of numbeer of prisoners that found their numbers
-    int free_prisoners[NUM_PRISONERS] = { 0 }; // if prisoner 2 was freed, free_prisoners[2-1] = 1;
+    int free_prisoners[NUM_PRISONERS+1] = { 0 }; // if prisoner 2 was freed, free_prisoners[2] = 1;
     int result;
     int target = 1;
 
@@ -106,7 +106,6 @@ int main() {
     int iterations = 1;
     int room[NUM_PRISONERS+1];
     int escapes = 0;
-
 
     for (int i=0; i < iterations; i++) {
         printf("1");
