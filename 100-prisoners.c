@@ -15,11 +15,6 @@ Version: 1.0
 #define NUM_PRISONERS 100
 
 /*
-Functions:
-1. Initialize room with random permutation of 1-100 (length 101 array, index 1-100 have numbers 1-100)
-2. Given a prisoner number and the room, determine if the prisoner finds their number in a most 50 steps
-3. Given a room, determine if all prisoners find their numbers
-
 run the last function on a large number (ex: 100,0000) of randomly chosen rooms, and estimate the probabiliy that all prisoners find their number
 
 
@@ -52,7 +47,7 @@ void swap(int *a, int *b) {
     *b = temp;
 }
 
-// shuffles the array from indeces 1-size
+// shuffles the array from index 1-size
 // array[0] stays the same
 void shuffle(int *array, int size) {
     int i, j;
@@ -80,9 +75,13 @@ bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, in
     while (room[temp_next] != target) {
         steps++;
         free_prisoners[temp_next]++;
-        if (steps > 50) { return 0; }
+        if (steps > 50) {
+            printf("It didn't work");
+            return 0;
+        }
         else { temp_next = room[temp_next]; }
     }
+    free_prisoners[temp_next]++;
     *num_success += steps;
 
     return 1; // would return 1 if it works
@@ -97,8 +96,11 @@ bool all_find_numbers(int *room) {
 
     while (num_success < 50) {
         result = prisoner_finds_number(target, &num_success, free_prisoners, room);
-        if (result == 0) { return 0; }
-        while (free_prisoners[target] == 1) {
+        printf("'%d'", num_success);
+        if (result == 0) {
+            return 0;
+        }
+        while (free_prisoners[target] < 1) { //==  might be more efficient
             target = target += 1;
         }
     }
@@ -111,14 +113,25 @@ int main() {
     int room[NUM_PRISONERS+1];
     int escapes = 0;
 
+    // prepares the rand function
+    srand(time(NULL));
+
     for (int i=0; i < iterations; i++) {
         printf("1");
 
         bool prisoners_are_free;
         initialize_room(room);
 
+        printf("\n\n");
+        for (i=0; i<NUM_PRISONERS+1; i++) {
+            printf("%d, ", room[i]);
+        }
+        printf("\n\n");
+
+
         bool prisonsers_are_free = all_find_numbers(room);
         if (prisoners_are_free) { escapes++; }
+        printf("%d", escapes);
     }
 
     return 0;
