@@ -4,7 +4,7 @@ Programmer: Miguel Lock
 
 Class: CSC-310
 Instructor: Dr. John Coleman
-Date: 9/13/23
+Date: 9/22/23
 Version: 1.0
 *************************/
 
@@ -15,9 +15,6 @@ Version: 1.0
 #define NUM_PRISONERS 100
 
 /*
-run the last function on a large number (ex: 100,0000) of randomly chosen rooms, and estimate the probabiliy that all prisoners find their number
-
-
 Extra credit:
  - Find a clever way to implement the third funcion above that doesn't simply call the second funciton in a nieve loop
      - Hint: if a prisoner finds their nmber in a chain of 20 numbers, all of the other prisoners on the chain will find their number
@@ -88,12 +85,12 @@ bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, in
 
 bool all_find_numbers(int *room) {
     int result, num_success = 0, target = 1;
-    int free_prisoners[NUM_PRISONERS+1] = { 0 }; // if prisoner 2 was freed, free_prisoners[2] = 1;
+    int free_prisoners[NUM_PRISONERS+1] = { 0 };
 
     while (num_success < 50) {
         result = prisoner_finds_number(target, &num_success, free_prisoners, room);
         if (result == 0) { return 0; }
-        while (free_prisoners[target] < 1) { //==  might be more efficient
+        while (free_prisoners[target] < 1) {
             target = target += 1;
         }
     }
@@ -102,7 +99,7 @@ bool all_find_numbers(int *room) {
 }
 
 int main() {
-    int iterations = 1000, escapes = 0;
+    int iterations = 1000000, escapes = 0;
     int room[NUM_PRISONERS+1];
     bool prisoners_are_free;
     double chance_escapes;
@@ -125,4 +122,4 @@ int main() {
 }
 
 // initializeRoom(int room[], int roomSize)
-// initializeRoom(room, SIZe)
+// initializeRoom(room, SIZE)
