@@ -39,6 +39,9 @@ cout << "How many times would you like to simulate the 100 prisoner problem?\n>"
 cout << "do you want more to try a custom number of prisoners? (y/n)\n>"
 if y:
 cout << "How many prisoners are we talking about?\n>"
+
+Idea for main:
+int num_prisoners = userinput, must be multiple of 100. bool stop = num_prisoners mod 100, if stop = 0 we have a valid value.
 */
 
 // swaps two ints
@@ -51,7 +54,7 @@ void swap(int *a, int *b) {
 
 // shuffles the array
 void shuffle(int *array, int size) {
-    int i, j, temp;
+    int i, j;
 
     for (i=size-1; i>1; i--) {
         j = rand() % (i+1);
@@ -61,75 +64,56 @@ void shuffle(int *array, int size) {
 
 // sets variables in room[] to values 1-num_prisoners
 void initialize_room(int *room) {
-    for (int i=0; i<NUM_PRISONERS; i++) {
+    for (int i=1; i<NUM_PRISONERS+1; i++) {
         room[i] = i;
     }
-    shuffle(room, NUM_PRISONERS);
 }
 
-bool prisoner_finds_number(int target, int *num_success, int *prisoners_remaining, int *room) {//(int id) {
+bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, int *room) {//(int id) {
     int steps = 1;
     int temp_next = target;
 
-    while (room [temp_next] != target) {
+    while (room[temp_next] != target) {
         steps++;
-        prisoners_remaining[temp_next]++;
+        free_prisoners[temp_next]++;
         if (steps > 50) { return 0; }
         else { temp_next = room[temp_next]; }
     }
+    *num_success += steps;
 
     return 1; // would return 1 if it works
 }
 
 
-// IDEA FOR MORE EFFICIENCY: FOUND ITEMS IN ROOM ARE SET TO 0. THEN 
-// ITEMS 
-
 bool all_find_numbers(int *room) {
     int num_success = 0; //count of numbeer of prisoners that found their numbers
-    int fail = 1;
-
-    int prisoners_remaining[NUM_PRISONERS+1];
-    
-    for (int i=1; i < NUM_PRISONERS+1; i++) {
-        prisoners_remaining[i] = i;
-    }
-
-    int free_prisoners[NUM_PRISONERS+1] = { 0 }; // if prisoner 2 was freed, free_prisoners[2] = 1;
-
+    int free_prisoners[NUM_PRISONERS] = { 0 }; // if prisoner 2 was freed, free_prisoners[2-1] = 1;
+    int result;
     int target = 1;
 
     while (num_success < 50) {
-        int result = prisoner_finds_number(target, &num_success, prisoners_remaining, room);
-        if (result = 0) { fail = 1; }
-        //set target value
-        for (int i=0; i<NUM_PRISONERS/2; i++) {
-            //target = 
+        result = prisoner_finds_number(target, &num_success, free_prisoners, room);
+        if (result == 0) { return 0; }
+        while (free_prisoners[target] == 1) {
+            target = target += 1;
         }
     }
 
-
-    //prisoners_remaining will be fed into prisoner_finds_number, 
-    //all prisoners who find their number will be set to 0. That is how we
-    //determine which prisoner we should check for next. Lateron, might 
-
-    //something with prisoner_finds_number()
-    // if num_successful_prisoner > 50: return true
+    return 1;
 }
 
 int main() {
     int iterations = 1;
-    int room[NUM_PRISONERS];
+    int room[NUM_PRISONERS+1];
     int escapes = 0;
 
-
-    // int num_prisoners = userinput, must be multiple of 100. bool stop = num_prisoners mod 100, if stop = 0 we have a valid value.
 
     for (int i=0; i < iterations; i++) {
         printf("1");
 
         bool prisoners_are_free;
         initialize_room(room);
+        shuffle(room, NUM_PRISONERS);
 
         bool prisonsers_are_free = all_find_numbers(room);
         if (prisoners_are_free) { escapes++; }
