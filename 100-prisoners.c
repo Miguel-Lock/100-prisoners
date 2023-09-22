@@ -64,7 +64,6 @@ void initialize_room(int *room) {
     for (int i=1; i<NUM_PRISONERS+1; i++) {
         room[i] = i;
     }
-
     shuffle(room, NUM_PRISONERS);
 }
 
@@ -95,9 +94,7 @@ bool all_find_numbers(int *room) {
 
     while (num_success < 50) {
         result = prisoner_finds_number(target, &num_success, free_prisoners, room);
-        if (result == 0) {
-            return 0;
-        }
+        if (result == 0) { return 0; }
         while (free_prisoners[target] < 1) { //==  might be more efficient
             target = target += 1;
         }
@@ -107,7 +104,7 @@ bool all_find_numbers(int *room) {
 }
 
 int main() {
-    int iterations = 1;
+    int iterations = 100000;
     int room[NUM_PRISONERS+1];
     int escapes = 0;
     bool prisoners_are_free;
@@ -116,23 +113,21 @@ int main() {
     srand(time(NULL));
 
     for (int i=0; i < iterations; i++) {
-
         initialize_room(room);
 
         prisoners_are_free = all_find_numbers(room);
-        if (prisoners_are_free == 1) {
-            escapes++;
-        }
+        
+        if (prisoners_are_free == 1) { escapes++; }
     }
     
     printf("\nEscapes: %d\nIterations: %d\n", escapes, iterations);
 
-    escapes = 5;
-    iterations = 6;
-
-    double chance_escapes = escapes / iterations;
+    double chance_escapes = (double)escapes / iterations;
 
     printf("Percentage chance of escapes: %f", chance_escapes);
 
     return 0;
 }
+
+// initializeRoom(int room[], int roomSize)
+// initializeRoom(room, SIZe)
