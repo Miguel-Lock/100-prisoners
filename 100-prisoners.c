@@ -39,15 +39,33 @@ if y:
 cout << "How many prisoners are we talking about?\n>"
 */
 
+// swaps two ints
+// must pass in *a and *b by address using the & operator
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// shuffles the array
+void shuffle(int *array, int size) {
+    int i, j, temp;
+
+    for (i=size-1; i>1; i--) {
+        j = rand() % (i+1);
+        swap(&array[i], &array[j]);
+    }
+}
+
 // sets variables in room[] to values 1-num_prisoners
 void initialize_room(int *room) {
     for (int i=1; i<NUM_PRISONERS+1; i++) {
         room[i] = i;
     }
-    //shuffle room
+    shuffle(room, NUM_PRISONERS);
 }
 
-bool prisoner_finds_number(int target, int num_success, int *prisoners_remaining, int *room) {//(int id) {
+bool prisoner_finds_number(int target, int *num_success, int *prisoners_remaining, int *room) {//(int id) {
     int steps = 1;
     int temp_next = target;
 
@@ -61,8 +79,13 @@ bool prisoner_finds_number(int target, int num_success, int *prisoners_remaining
     return 1; // would return 1 if it works
 }
 
+
+// IDEA FOR MORE EFFICIENCY: FOUND ITEMS IN ROOM ARE SET TO 0. THEN 
+// ITEMS 
+
 bool all_find_numbers(int *room) {
     int num_success = 0; //count of numbeer of prisoners that found their numbers
+    int fail = 1;
 
     int prisoners_remaining[NUM_PRISONERS+1];
     
@@ -72,7 +95,18 @@ bool all_find_numbers(int *room) {
 
     int free_prisoners[NUM_PRISONERS+1] = { 0 }; // if prisoner 2 was freed, free_prisoners[2] = 1;
 
-    prisoner_finds_number(target, num_success, prisoners_remaining, room);
+    int target = 1;
+
+    while (num_success < 50) {
+        int result = prisoner_finds_number(target, &num_success, prisoners_remaining, room);
+        if (result = 0) { fail = 1; }
+        //set target value
+        for (int i=0; i<NUM_PRISONERS/2; i++) {
+            target = 
+        }
+    }
+
+
     //prisoners_remaining will be fed into prisoner_finds_number, 
     //all prisoners who find their number will be set to 0. That is how we
     //determine which prisoner we should check for next. Lateron, might 
