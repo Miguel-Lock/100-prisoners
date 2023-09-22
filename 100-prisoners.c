@@ -76,7 +76,6 @@ bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, in
         steps++;
         free_prisoners[temp_next]++;
         if (steps > 50) {
-            printf("It didn't work");
             return 0;
         }
         else { temp_next = room[temp_next]; }
@@ -122,17 +121,13 @@ int main() {
         bool prisoners_are_free;
         initialize_room(room);
 
-        printf("\n\n");
-        for (i=0; i<NUM_PRISONERS+1; i++) {
-            printf("%d, ", room[i]);
-        }
-        printf("\n\n");
-
-
         bool prisonsers_are_free = all_find_numbers(room);
         if (prisoners_are_free) { escapes++; }
-        printf("%d", escapes);
     }
+    double chance_escapes = escapes / iterations;
+    
+    printf("\nEscapes: %d\nIterations: %d\n", escapes, iterations);
+    printf("Percentage chance of escapes: %d", chance_escapes);
 
     return 0;
 }
