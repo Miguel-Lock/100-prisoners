@@ -10,6 +10,8 @@ Version: 1.0
 
 #include <stdio.h>
 #include <stdbool.h> //for boolean
+#include <time.h>
+#include <stdlib.h>
 #define NUM_PRISONERS 100
 
 /*
@@ -59,7 +61,7 @@ void shuffle(int *array, int size) {
 
 // sets variables in room[] to values 1-num_prisoners
 void initialize_room(int *room) {
-    for (int i=1; i<NUM_PRISONERS+1; i++) {
+    for (int i=0; i<NUM_PRISONERS; i++) {
         room[i] = i;
     }
     shuffle(room, NUM_PRISONERS);
@@ -102,7 +104,7 @@ bool all_find_numbers(int *room) {
         if (result = 0) { fail = 1; }
         //set target value
         for (int i=0; i<NUM_PRISONERS/2; i++) {
-            target = 
+            //target = 
         }
     }
 
@@ -117,16 +119,20 @@ bool all_find_numbers(int *room) {
 
 int main() {
     int iterations = 1;
+    int room[NUM_PRISONERS];
+    int escapes = 0;
+
 
     // int num_prisoners = userinput, must be multiple of 100. bool stop = num_prisoners mod 100, if stop = 0 we have a valid value.
 
     for (int i=0; i < iterations; i++) {
+        printf("1");
+
         bool prisoners_are_free;
-        // initialize room[] size NUM_PRISONERS
-        int room[NUM_PRISONERS+1];
         initialize_room(room);
 
         bool prisonsers_are_free = all_find_numbers(room);
+        if (prisoners_are_free) { escapes++; }
     }
 
     return 0;
