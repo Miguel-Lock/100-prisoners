@@ -95,7 +95,6 @@ bool all_find_numbers(int *room) {
 
     while (num_success < 50) {
         result = prisoner_finds_number(target, &num_success, free_prisoners, room);
-        printf("'%d'", num_success);
         if (result == 0) {
             return 0;
         }
@@ -111,23 +110,29 @@ int main() {
     int iterations = 1;
     int room[NUM_PRISONERS+1];
     int escapes = 0;
+    bool prisoners_are_free;
 
     // prepares the rand function
     srand(time(NULL));
 
     for (int i=0; i < iterations; i++) {
-        printf("1");
 
-        bool prisoners_are_free;
         initialize_room(room);
 
-        bool prisonsers_are_free = all_find_numbers(room);
-        if (prisoners_are_free) { escapes++; }
+        prisoners_are_free = all_find_numbers(room);
+        if (prisoners_are_free == 1) {
+            escapes++;
+        }
     }
-    double chance_escapes = escapes / iterations;
     
     printf("\nEscapes: %d\nIterations: %d\n", escapes, iterations);
-    printf("Percentage chance of escapes: %d", chance_escapes);
+
+    escapes = 5;
+    iterations = 6;
+
+    double chance_escapes = escapes / iterations;
+
+    printf("Percentage chance of escapes: %f", chance_escapes);
 
     return 0;
 }
