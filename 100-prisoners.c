@@ -52,12 +52,14 @@ void swap(int *a, int *b) {
     *b = temp;
 }
 
-// shuffles the array
+// shuffles the array from indeces 1-size
+// array[0] stays the same
 void shuffle(int *array, int size) {
     int i, j;
 
     for (i=size-1; i>1; i--) {
-        j = rand() % (i+1);
+        j = rand() % (i);
+        if (j == 0) { j = i; }
         swap(&array[i], &array[j]);
     }
 }
@@ -67,9 +69,11 @@ void initialize_room(int *room) {
     for (int i=1; i<NUM_PRISONERS+1; i++) {
         room[i] = i;
     }
+
+    shuffle(room, NUM_PRISONERS);
 }
 
-bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, int *room) {//(int id) {
+bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, int *room) {
     int steps = 1;
     int temp_next = target;
 
@@ -112,7 +116,6 @@ int main() {
 
         bool prisoners_are_free;
         initialize_room(room);
-        shuffle(room, NUM_PRISONERS);
 
         bool prisonsers_are_free = all_find_numbers(room);
         if (prisoners_are_free) { escapes++; }
