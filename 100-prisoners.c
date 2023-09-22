@@ -87,10 +87,8 @@ bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, in
 
 
 bool all_find_numbers(int *room) {
-    int num_success = 0; //count of numbeer of prisoners that found their numbers
+    int result, num_success = 0, target = 1;
     int free_prisoners[NUM_PRISONERS+1] = { 0 }; // if prisoner 2 was freed, free_prisoners[2] = 1;
-    int result;
-    int target = 1;
 
     while (num_success < 50) {
         result = prisoner_finds_number(target, &num_success, free_prisoners, room);
@@ -104,26 +102,23 @@ bool all_find_numbers(int *room) {
 }
 
 int main() {
-    int iterations = 100000;
+    int iterations = 1000, escapes = 0;
     int room[NUM_PRISONERS+1];
-    int escapes = 0;
     bool prisoners_are_free;
+    double chance_escapes;
 
     // prepares the rand function
     srand(time(NULL));
 
     for (int i=0; i < iterations; i++) {
         initialize_room(room);
-
-        prisoners_are_free = all_find_numbers(room);
         
-        if (prisoners_are_free == 1) { escapes++; }
+        if (all_find_numbers(room)) { escapes++; }
     }
     
+    chance_escapes = (double)escapes / iterations;
+
     printf("\nEscapes: %d\nIterations: %d\n", escapes, iterations);
-
-    double chance_escapes = (double)escapes / iterations;
-
     printf("Percentage chance of escapes: %f", chance_escapes);
 
     return 0;
