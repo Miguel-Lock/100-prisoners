@@ -14,27 +14,6 @@ Version: 1.0
 #include <stdlib.h>
 #define NUM_PRISONERS 100
 
-/*
-Extra credit:
- - Find a clever way to implement the third funcion above that doesn't simply call the second funciton in a nieve loop
-     - Hint: if a prisoner finds their nmber in a chain of 20 numbers, all of the other prisoners on the chain will find their number
-     - Self hint: if >50 prisoners find their number, every prisoner has found their number
- - Implement your own random number generator, a better on ethan the standard library rand()
-     - Alternatively, find a way to use the Mersenne Twistor using code that you include with your project
- - Investigate what happens as the number of prisoners tends to infinity.
-     - Ex: exompile a tabl of values for 100, 200, 300, ..., 2000
- - Anything else I can think of in C and clearly related to the project    
-
-
-______
-cout << "How many times would you like to simulate the 100 prisoner problem?\n>"
-cout << "do you want more to try a custom number of prisoners? (y/n)\n>"
-if y:
-cout << "How many prisoners are we talking about?\n>"
-
-Idea for main:
-int num_prisoners = userinput, must be multiple of 100. bool stop = num_prisoners mod 100, if stop = 0 we have a valid value.
-*/
 
 // swaps two ints
 // must pass in *a and *b by address using the & operator
@@ -120,6 +99,3 @@ int main() {
 
     return 0;
 }
-
-// initializeRoom(int room[], int roomSize)
-// initializeRoom(room, SIZE)
