@@ -24,3 +24,22 @@ int num_prisoners = userinput, must be multiple of 100. bool stop = num_prisoner
 
 // initializeRoom(int room[], int roomSize)
 // initializeRoom(room, SIZE)
+
+
+
+how to implement a Cryptographically Secure RNG in c
+
+#include <openssl/rand.h>
+
+int main() {
+  // Seed the RNG with some entropy.
+  RAND_seed(time(NULL));
+
+  // Generate a random number.
+  int random_number = RAND_bytes(sizeof(random_number), &random_number);
+
+  // Do something with the random number.
+  // ...
+
+  return 0;
+}

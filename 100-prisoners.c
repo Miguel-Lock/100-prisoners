@@ -15,6 +15,36 @@ Version: 1.0
 #define NUM_PRISONERS 100
 
 
+void swap(int *a, int *b);
+void initialize_room(int *room);
+bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, int *room);
+bool all_find_numbers(int *room);
+
+
+int main() {
+    int iterations = 1000000, escapes = 0;
+    int room[NUM_PRISONERS+1];
+    bool prisoners_are_free;
+    double chance_escapes;
+
+    // prepares the rand function
+    srand(time(NULL));
+
+    for (int i=0; i < iterations; i++) {
+        initialize_room(room);
+
+        if (all_find_numbers(room)) { escapes++; }
+    }
+    
+    chance_escapes = (double)escapes / iterations;
+
+    printf("\nEscapes: %d\nIterations: %d\n", escapes, iterations);
+    printf("Percent chance of escaping: %f", chance_escapes);
+
+    return 0;
+}
+
+
 // swaps two ints
 // must pass in *a and *b by address using the & operator
 void swap(int *a, int *b) {
@@ -22,6 +52,7 @@ void swap(int *a, int *b) {
     *a = *b;
     *b = temp;
 }
+
 
 // shuffles the array from index 1-size
 // array[0] stays the same
@@ -35,6 +66,7 @@ void shuffle(int *array, int size) {
     }
 }
 
+
 // sets variables in room[] to values 1-num_prisoners
 void initialize_room(int *room) {
     for (int i=1; i<NUM_PRISONERS+1; i++) {
@@ -42,6 +74,7 @@ void initialize_room(int *room) {
     }
     shuffle(room, NUM_PRISONERS);
 }
+
 
 bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, int *room) {
     int steps = 1;
@@ -58,7 +91,7 @@ bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, in
     free_prisoners[temp_next]++;
     *num_success += steps;
 
-    return 1; // would return 1 if it works
+    return 1;
 }
 
 
@@ -69,33 +102,10 @@ bool all_find_numbers(int *room) {
     while (num_success < 50) {
         result = prisoner_finds_number(target, &num_success, free_prisoners, room);
         if (result == 0) { return 0; }
-        while (free_prisoners[target] < 1) {
-            target = target += 1;
+        while (free_prisoners[target] < 1) { // this is my truoble line??? Idea: ...[target] > 1
+            target += 1;
         }
     }
 
     return 1;
-}
-
-int main() {
-    int iterations = 1000000, escapes = 0;
-    int room[NUM_PRISONERS+1];
-    bool prisoners_are_free;
-    double chance_escapes;
-
-    // prepares the rand function
-    srand(time(NULL));
-
-    for (int i=0; i < iterations; i++) {
-        initialize_room(room);
-        
-        if (all_find_numbers(room)) { escapes++; }
-    }
-    
-    chance_escapes = (double)escapes / iterations;
-
-    printf("\nEscapes: %d\nIterations: %d\n", escapes, iterations);
-    printf("Percentage chance of escapes: %f", chance_escapes);
-
-    return 0;
 }
