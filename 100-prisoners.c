@@ -33,11 +33,12 @@ int main() {
     srand(time(NULL));
 
     while (num_prisoners < 100 || num_prisoners > 2000 || num_prisoners % 100 != 0) {
-        printf("Enter the number of prisoners.\nNumber must be a multiple of 100 between 100 and 2000: ");
-        scanf("%d", num_prisoners);
+        printf("Enter the number of prisoners?\n(Suggested: 100): ");
+        scanf("%d", &num_prisoners);
+
 
         if (num_prisoners < 100 || num_prisoners > 2000 || num_prisoners % 100 != 0) {
-            printf("That was incorrect input. Please try again.\n\n");
+            printf("Error: Number of prisoners must be a multiple of 100 from 100-2000.\n\n");
         }
     }
     printf("\n\n");
@@ -48,7 +49,7 @@ int main() {
         scanf("%d", &iterations);
 
         if (iterations > 1000000 || iterations < 1) {
-            printf("Error: Number of iterations must be between 1 and 1000000\n");
+            printf("Error: Number of iterations must be between 1 and 1000000\n\n");
         }
     }
     printf("\n");
