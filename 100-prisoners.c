@@ -12,7 +12,7 @@ Version: 1.0
 #include <stdbool.h> //for boolean
 #include <time.h>
 #include <stdlib.h>
-#define NUM_PRISONERS 100
+#define NUM_PRISONERS 2
 
 // .31183
 
@@ -27,9 +27,21 @@ int main() {
     int iterations = 0, escapes = 0;
     int room[NUM_PRISONERS+1];
     double chance_escapes;
+    int num_prisoners = 0;
 
     // prepares the rand function
     srand(time(NULL));
+
+    while (num_prisoners < 100 || num_prisoners > 2000 || num_prisoners % 100 != 0) {
+        printf("Enter the number of prisoners.\nNumber must be a multiple of 100 between 100 and 2000: ");
+        scanf("%d", num_prisoners);
+
+        if (num_prisoners < 100 || num_prisoners > 2000 || num_prisoners % 100 != 0) {
+            printf("That was incorrect input. Please try again.\n\n");
+        }
+    }
+    printf("\n\n");
+
 
     while (iterations > 1000000 || iterations < 1) {
         printf("How many times do you want this program to run?\n(Suggested: 1000000): ");
@@ -39,6 +51,7 @@ int main() {
             printf("Error: Number of iterations must be between 1 and 1000000\n");
         }
     }
+    printf("\n");
 
     for (int i=0; i < iterations; i++) {
         initialize_room(room);
@@ -109,7 +122,7 @@ bool all_find_numbers(int *room) {
     int result, num_success = 0, target = 1;
     int free_prisoners[NUM_PRISONERS+1] = { 0 };
 
-    while (num_success < 50) {
+    while (num_success < NUM_PRISONERS/2) {
         result = prisoner_finds_number(target, &num_success, free_prisoners, room);
         if (result == 0) {
             return 0;
