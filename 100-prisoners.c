@@ -11,12 +11,23 @@ EXTRA CREDIT:
 1. I am using my own PRNG
 2. Allows user input for the number of prisoners
 3. Allows user input for the number of iterations
-4. 
+4. Added my own PRNG (mersene twister) (credits mersene twister: chatGPT)
+
 *************************/
 #include <stdio.h>
 #include <stdbool.h>
 #include <time.h>
 #include <stdlib.h>
+
+// for mersene twister
+#define MT_N 624
+#define MT_MATRIX_A 0x9908B0DFUL
+#define MT_UPPER_MASK 0x80000000UL
+#define MT_LOWER_MASK 0x7FFFFFFFUL
+
+//for mersene twister
+static unsigned long mt[MT_N];
+static int mti = MT_N + 1;
 
 // .31183
 
@@ -25,13 +36,17 @@ void shuffle(int *array, int size);
 void initialize_room(int *room, int num_prisoners);
 bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, int *room, int num_prisoners);
 bool all_find_numbers(int *room, int num_prisoners);
+unsigned long genrand_int32(void);
+void init_genrand(unsigned long s);
 
 int main() {
     int iterations = 0, escapes = 0, num_prisoners = 0;
     double chance_escapes;
 
     // prepares the rand function
-    srand(time(NULL));
+    //srand(time(NULL));
+    unsigned long seed = (unsigned long)time(NULL);
+    init_genrand(seed);
 
     while (num_prisoners < 100 || num_prisoners > 2000 || num_prisoners % 100 != 0) {
         printf("Enter the number of prisoners?\n(Suggested: 100): ");
@@ -83,7 +98,8 @@ void shuffle(int *array, int size) {
     int i, j;
 
     for (i=size; i>0; i--) {
-        j = rand() % (i);
+        //j = rand() % (i);
+        j = genrand_int32() % i;
         if (j == 0) {
             j = i;
         }
@@ -139,4 +155,50 @@ bool all_find_numbers(int *room, int num_prisoners) {
     }
 
     return 1;
+}
+
+
+// Initialize the generator with a seed
+// part of mersene twister
+void init_genrand(unsigned long s) {
+    mt[0] = s & 0xFFFFFFFFUL;
+    for (mti = 1; mti < MT_N; mti++) {
+        mt[mti] = (1812433253UL * (mt[mti - 1] ^ (mt[mti - 1] >> 30)) + mti);
+        mt[mti] &= 0xFFFFFFFFUL;
+    }
+}
+
+// Generate a random unsigned long
+// part of mersene twister
+unsigned long genrand_int32(void) {
+    int mt_m = 397;
+    unsigned long y;
+    static unsigned long mag01[2] = {0x0UL, MT_MATRIX_A};
+
+    if (mti >= MT_N) {
+        int kk;
+
+        if (mti == MT_N + 1)  // Initialize with a default seed if not already initialized
+            init_genrand(5489UL);
+
+        for (kk = 0; kk < MT_N - mt_m; kk++) {
+            y = (mt[kk] & MT_UPPER_MASK) | (mt[kk + 1] & MT_LOWER_MASK);
+            mt[kk] = mt[kk + mt_m] ^ (y >> 1) ^ mag01[y & 0x1UL];
+        }
+        for (; kk < MT_N - 1; kk++) {
+            y = (mt[kk] & MT_UPPER_MASK) | (mt[kk + 1] & MT_LOWER_MASK);
+            mt[kk] = mt[kk + (mt_m - MT_N)] ^ (y >> 1) ^ mag01[y & 0x1UL];
+        }
+        y = (mt[MT_N - 1] & MT_UPPER_MASK) | (mt[0] & MT_LOWER_MASK);
+        mt[MT_N - 1] = mt[mt_m - 1] ^ (y >> 1) ^ mag01[y & 0x1UL];
+        mti = 0;
+    }
+
+    y = mt[mti++];
+    y ^= (y >> 11);
+    y ^= (y << 7) & 0x9D2C5680UL;
+    y ^= (y << 15) & 0xEFC60000UL;
+    y ^= (y >> 18);
+
+    return y;
 }
