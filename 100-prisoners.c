@@ -4,15 +4,16 @@ Programmer: Miguel Lock
 
 Class: CSC-310
 Instructor: Dr. John Coleman
-Date: 10/02/23
+Date: 10/03/23
 Version: 1.0
 
-EXTRA CREDIT:
+Chance: .31183
+Extra Credit:
 1. I am using my own PRNG
 2. Allows user input for the number of prisoners
 3. Allows user input for the number of iterations
-4. Added my own PRNG (mersene twister) (credits mersene twister: chatGPT)
-
+4. Added my own PRNG (mersene twister) (source: chatGPT)
+5. 
 *************************/
 #include <stdio.h>
 #include <stdbool.h>
@@ -29,8 +30,6 @@ EXTRA CREDIT:
 static unsigned long mt[MT_N];
 static int mti = MT_N + 1;
 
-// .31183
-
 int get_num_prisoners();
 int get_num_iterations();
 void swap(int *a, int *b);
@@ -41,6 +40,7 @@ bool all_find_numbers(int *room, int num_prisoners);
 unsigned long genrand_int32(void);
 void init_genrand(unsigned long s);
 
+
 int main() {
     int num_prisoners, iterations, escapes = 0;
     double chance_escapes;
@@ -48,12 +48,11 @@ int main() {
     init_genrand((unsigned long)time(NULL)); //seeds mersene twister
 
     num_prisoners = get_num_prisoners();
+    int room[num_prisoners+1];
 
     iterations = get_num_iterations();
 
-    int room[num_prisoners+1];
-
-    // runs simulaion iterations times, to see the chance of the prisoners escaping
+    // runs simulation "iterations" times, to see the chance of the prisoners escaping
     for (int i=0; i < iterations; i++) {
         initialize_room(room, num_prisoners);
         if (all_find_numbers(room, num_prisoners)) {
@@ -71,7 +70,7 @@ int main() {
 
 
 // gets user input for num_prisoners
-// 100 < num_prisoners < 2000, and num_prisoners is multiple of 100
+// 100 < num_prisoners < 2000, && num_prisoners is multiple of 100
 int get_num_prisoners() {
     int num_prisoners = 0;
     while (num_prisoners < 100 || num_prisoners > 2000 || num_prisoners % 100 != 0) {
@@ -86,7 +85,6 @@ int get_num_prisoners() {
 
     return num_prisoners;
 }
-
 
 // gets user input for iterations
 // 1 < iterations < 10000000
@@ -104,7 +102,6 @@ int get_num_iterations() {
 
     return iterations;
 }
-
 
 // swaps two ints
 // must pass in *a and *b by address using the & operator
@@ -139,6 +136,7 @@ void initialize_room(int *room, int num_prisoners) {
 }
 
 // returns bool if prisoner finds their number
+// increments free_prisoners (ADD MORE TO DESCPTION)
 bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, int *room, int num_prisoners) {
     int steps = 1, temp_next = target;
 
@@ -157,7 +155,7 @@ bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, in
     return 1;
 }
 
-// returns bool if all prisoners actually escape
+// returns bool if all prisoners escape
 bool all_find_numbers(int *room, int num_prisoners) {
     int result, num_success = 0, target = 1, free_prisoners[num_prisoners+1];
 
