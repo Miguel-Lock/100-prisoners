@@ -9,11 +9,16 @@ Version: 1.0
 
 Chance: .31183
 Extra Credit:
-1. I am using my own PRNG
-2. Allows user input for the number of prisoners
-3. Allows user input for the number of iterations
-4. Added my own PRNG (mersene twister) (source: chatGPT)
-5. 
+1. Allows user input for the number of prisoners
+2. Allows user input for the number of iterations
+3. Added my own PRNG (mersene twister) (source: chatGPT)
+4. Optimized program (If a prisoner finds their number in a chain
+of 20 numbers, all prisoners find their number)
+
+Questions:
+1. How to show extra credit
+2. Is line at //QUESTION: IS THIS WHAT I WANT HERE correct?
+3. Is my answer correct for 2000 prisoners and 10000 iterations?
 *************************/
 #include <stdio.h>
 #include <stdbool.h>
@@ -135,41 +140,45 @@ void initialize_room(int *room, int num_prisoners) {
     shuffle(room, num_prisoners);
 }
 
-// returns bool if prisoner finds their number
+// returns bool if prisoner (target) finds their number
 // increments free_prisoners (ADD MORE TO DESCPTION)
 bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, int *room, int num_prisoners) {
     int steps = 1, temp_next = target;
 
     while (room[temp_next] != target) {
         steps++;
-        free_prisoners[temp_next]++; // if prisoner n is in the loop: free_prisoners[n]++ for later efficiency
-        if (steps > num_prisoners / 2) {
-            return 0; // returns 0 if prisoner did not find their number in the alloted number of steps
+        free_prisoners[temp_next]++; //if prisoner[temp_next] is in the loop: documents so that prisoner isn't checked for again
+
+        // returns 0 if prisoner did not find their number in the alloted number of steps
+        if (steps > num_prisoners / 2) { //QUESTION: IS THIS WHAT I WANT HERE
+            return 0;
         } else {
             temp_next = room[temp_next];
         }
     }
     free_prisoners[temp_next]++;
-    *num_success += steps; // adds the number of prisoners in the loop to num_success
+    *num_success += steps; //adds the number of prisoners found in the loop to num_success
 
     return 1;
 }
 
-// returns bool if all prisoners escape
+// returns bool indicating if all prisoners escape
 bool all_find_numbers(int *room, int num_prisoners) {
-    int result, num_success = 0, target = 1, free_prisoners[num_prisoners+1];
+    int num_success = 0, target = 1, free_prisoners[num_prisoners+1];
 
+    // initializes contents of free_prisoners to 0
     for (int i=0; i<num_prisoners+1; i++) {
         free_prisoners[i] = 0;
     }
 
     while (num_success < num_prisoners/2) {
-        result = prisoner_finds_number(target, &num_success, free_prisoners, room, num_prisoners);
-        if (result == 0) {
+        //if prisoner doesn't find their number: return 0
+        if (!prisoner_finds_number(target, &num_success, free_prisoners, room, num_prisoners)) {
             return 0;
         }
+        //calculates next target prisoner
         while (free_prisoners[target] >= 1) {
-            target += 1;
+            target += 1; 
         }
     }
 
