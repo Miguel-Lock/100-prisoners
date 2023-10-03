@@ -31,6 +31,8 @@ static int mti = MT_N + 1;
 
 // .31183
 
+int get_num_prisoners();
+int get_num_iterations();
 void swap(int *a, int *b);
 void shuffle(int *array, int size);
 void initialize_room(int *room, int num_prisoners);
@@ -40,14 +42,38 @@ unsigned long genrand_int32(void);
 void init_genrand(unsigned long s);
 
 int main() {
-    int iterations = 0, escapes = 0, num_prisoners = 0;
+    int num_prisoners, iterations, escapes = 0;
     double chance_escapes;
 
-    // prepares the rand function
-    //srand(time(NULL));
-    unsigned long seed = (unsigned long)time(NULL);
-    init_genrand(seed);
+    init_genrand((unsigned long)time(NULL)); //seeds mersene twister
 
+    num_prisoners = get_num_prisoners();
+
+    iterations = get_num_iterations();
+
+    int room[num_prisoners+1];
+
+    // runs simulaion iterations times, to see the chance of the prisoners escaping
+    for (int i=0; i < iterations; i++) {
+        initialize_room(room, num_prisoners);
+        if (all_find_numbers(room, num_prisoners)) {
+            escapes++;
+        }
+    }
+    chance_escapes = (double)escapes / iterations;
+
+    // displays results
+    printf("\nEscapes: %d\nIterations: %d\n", escapes, iterations);
+    printf("Chance of escaping: %f", chance_escapes);
+
+    return 0;
+}
+
+
+// gets user input for num_prisoners
+// 100 < num_prisoners < 2000, and num_prisoners is multiple of 100
+int get_num_prisoners() {
+    int num_prisoners = 0;
     while (num_prisoners < 100 || num_prisoners > 2000 || num_prisoners % 100 != 0) {
         printf("Enter the number of prisoners?\n(Suggested: 100): ");
         scanf("%d", &num_prisoners);
@@ -58,29 +84,25 @@ int main() {
     }
     printf("\n\n");
 
-    while (iterations > 1000000 || iterations < 1) {
+    return num_prisoners;
+}
+
+
+// gets user input for iterations
+// 1 < iterations < 10000000
+int get_num_iterations() {
+    int iterations = 0;
+    while (iterations > 10000000 || iterations < 1) {
         printf("How many times do you want this program to run?\n(Suggested: 1000000): ");
         scanf("%d", &iterations);
 
-        if (iterations > 1000000 || iterations < 1) {
-            printf("Error: Number of iterations must be between 1 and 1000000\n\n");
+        if (iterations > 10000000 || iterations < 1) {
+            printf("Error: Number of iterations must be between 1 and 10000000\n\n");
         }
     }
     printf("\n");
 
-    int room[num_prisoners+1];
-    for (int i=0; i < iterations; i++) {
-        initialize_room(room, num_prisoners);
-        if (all_find_numbers(room, num_prisoners)) {
-            escapes++;
-        }
-    }
-    chance_escapes = (double)escapes / iterations;
-
-    printf("\nEscapes: %d\nIterations: %d\n", escapes, iterations);
-    printf("Chance of escaping: %f", chance_escapes);
-
-    return 0;
+    return iterations;
 }
 
 
@@ -98,16 +120,17 @@ void shuffle(int *array, int size) {
     int i, j;
 
     for (i=size; i>0; i--) {
-        //j = rand() % (i);
+        // gets random number from 1-i
         j = genrand_int32() % i;
         if (j == 0) {
             j = i;
         }
+
         swap(&array[i], &array[j]);
     }
 }
 
-// sets variables in room[] to values 1-num_prisoners
+// sets variables in room[] to values 1-num_prisoners, starting at room[1]
 void initialize_room(int *room, int num_prisoners) {
     for (int i=1; i<num_prisoners+1; i++) {
         room[i] = i;
@@ -117,16 +140,16 @@ void initialize_room(int *room, int num_prisoners) {
 
 // returns bool if prisoner finds their number
 bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, int *room, int num_prisoners) {
-    int steps = 1;
-    int temp_next = target;
+    int steps = 1, temp_next = target;
 
     while (room[temp_next] != target) {
         steps++;
         free_prisoners[temp_next]++; // if prisoner n is in the loop: free_prisoners[n]++ for later efficiency
         if (steps > num_prisoners / 2) {
-            return 0;
+            return 0; // returns 0 if prisoner did not find their number in the alloted number of steps
+        } else {
+            temp_next = room[temp_next];
         }
-        else { temp_next = room[temp_next]; }
     }
     free_prisoners[temp_next]++;
     *num_success += steps; // adds the number of prisoners in the loop to num_success
@@ -136,8 +159,7 @@ bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, in
 
 // returns bool if all prisoners actually escape
 bool all_find_numbers(int *room, int num_prisoners) {
-    int result, num_success = 0, target = 1;
-    int free_prisoners[num_prisoners+1];
+    int result, num_success = 0, target = 1, free_prisoners[num_prisoners+1];
 
     for (int i=0; i<num_prisoners+1; i++) {
         free_prisoners[i] = 0;
@@ -146,7 +168,6 @@ bool all_find_numbers(int *room, int num_prisoners) {
     while (num_success < num_prisoners/2) {
         result = prisoner_finds_number(target, &num_success, free_prisoners, room, num_prisoners);
         if (result == 0) {
-
             return 0;
         }
         while (free_prisoners[target] >= 1) {
@@ -159,7 +180,7 @@ bool all_find_numbers(int *room, int num_prisoners) {
 
 
 // Initialize the generator with a seed
-// part of mersene twister
+// Part of mersene twister
 void init_genrand(unsigned long s) {
     mt[0] = s & 0xFFFFFFFFUL;
     for (mti = 1; mti < MT_N; mti++) {
@@ -169,7 +190,7 @@ void init_genrand(unsigned long s) {
 }
 
 // Generate a random unsigned long
-// part of mersene twister
+// Part of mersene twister
 unsigned long genrand_int32(void) {
     int mt_m = 397;
     unsigned long y;
