@@ -38,10 +38,10 @@ static int mti = MT_N + 1;
 int get_num_prisoners();
 int get_num_iterations();
 void swap(int *a, int *b);
-void shuffle(int *array, int size);
-void initialize_room(int *room, int num_prisoners);
-bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, int *room, int num_prisoners);
-bool all_find_numbers(int *room, int num_prisoners);
+void shuffle(int array[], int size);
+void initialize_room(int room[], int num_prisoners);
+bool prisoner_finds_number(int target, int *num_success, int free_prisoners[], int room[], int num_prisoners);
+bool all_find_numbers(int room[], int num_prisoners);
 unsigned long genrand_int32(void);
 void init_genrand(unsigned long s);
 
@@ -118,22 +118,20 @@ void swap(int *a, int *b) {
 
 // shuffles the array from index 1-size
 // array[0] stays the same
-void shuffle(int *array, int size) {
+void shuffle(int array[], int size) {
     int i, j;
-
     for (i=size; i>0; i--) {
         // gets random number from 1-i
         j = genrand_int32() % i;
         if (j == 0) {
             j = i;
         }
-
         swap(&array[i], &array[j]);
     }
 }
 
 // sets variables in room[] to values 1-num_prisoners, starting at room[1]
-void initialize_room(int *room, int num_prisoners) {
+void initialize_room(int room[], int num_prisoners) {
     for (int i=1; i<num_prisoners+1; i++) {
         room[i] = i;
     }
@@ -142,7 +140,7 @@ void initialize_room(int *room, int num_prisoners) {
 
 // returns bool if prisoner (target) finds their number
 // increments free_prisoners (ADD MORE TO DESCPTION)
-bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, int *room, int num_prisoners) {
+bool prisoner_finds_number(int target, int *num_success, int free_prisoners[], int room[], int num_prisoners) {
     int steps = 1, temp_next = target;
 
     while (room[temp_next] != target) {
@@ -163,7 +161,7 @@ bool prisoner_finds_number(int target, int *num_success, int *free_prisoners, in
 }
 
 // returns bool indicating if all prisoners escape
-bool all_find_numbers(int *room, int num_prisoners) {
+bool all_find_numbers(int room[], int num_prisoners) {
     int num_success = 0, target = 1, free_prisoners[num_prisoners+1];
 
     // initializes contents of free_prisoners to 0
@@ -171,7 +169,7 @@ bool all_find_numbers(int *room, int num_prisoners) {
         free_prisoners[i] = 0;
     }
 
-    while (num_success < num_prisoners/2) {
+    while (num_success < num_prisoners/2) { //QUESTION: IS THIS WHAT I WANT HERE
         //if prisoner doesn't find their number: return 0
         if (!prisoner_finds_number(target, &num_success, free_prisoners, room, num_prisoners)) {
             return 0;
