@@ -12,13 +12,14 @@ Extra Credit:
 1. Allows user input for the number of prisoners
 2. Allows user input for the number of iterations
 3. Added my own PRNG (mersene twister) (source: chatGPT)
-4. Optimized program (If a prisoner finds their number in a chain
-of 20 numbers, all prisoners find their number)
-
-Questions:
-1. How to show extra credit
-2. Is line at //QUESTION: IS THIS WHAT I WANT HERE correct?
-3. Is my answer correct for 2000 prisoners and 10000 iterations?
+4. Optimized program
+  a. If a prisoner finds their number in a chain
+  of 20 numbers, all prisoners find their number
+  b. If >50 prisoners find their number in their
+  loops, all prisoners find their number.
+5. Added option for user to test the mathematical
+statistical probability of the 100 prisoner problem
+(without running the simulation that relies on random values)
 *************************/
 #include <stdio.h>
 #include <stdbool.h>
@@ -35,6 +36,8 @@ Questions:
 static unsigned long mt[MT_N];
 static int mti = MT_N + 1;
 
+bool user_wants_calc();
+double calc_probability();
 int get_num_prisoners();
 int get_num_iterations();
 void swap(int *a, int *b);
@@ -47,6 +50,11 @@ void init_genrand(unsigned long s);
 
 
 int main() {
+    if (user_wants_calc()) {
+        calc_probability();
+        return 0;
+    }
+
     int num_prisoners, iterations, escapes = 0;
     double chance_escapes;
 
@@ -73,6 +81,26 @@ int main() {
     return 0;
 }
 
+bool user_wants_calc() {
+    int calculate;
+
+    printf("Enter 1 if you want to first calculate the statistical probability of the 100 prisoner problem\n");
+    printf("Enter 0 if you want to run a simulation of the 100 prisoner problem.\n>");
+    scanf("%d", &calculate);
+    if (calculate == 1) {
+        return 1;
+    }
+    return 0;
+}
+
+double calc_probability() {
+    double sum = 0, half_p = get_num_prisoners() / 2;
+
+    for (int i=1; i<half_p+1; i++) {
+        sum += 1 / (i + half_p);
+    }
+    printf("%lf\n", 1 - sum);
+}
 
 // gets user input for num_prisoners
 // 100 < num_prisoners < 2000, && num_prisoners is multiple of 100
@@ -148,7 +176,7 @@ bool prisoner_finds_number(int target, int num_prisoners, int *num_success, int 
         free_prisoners[temp_next]++; //if prisoner[temp_next] is in the loop: documents so that prisoner isn't checked for again
 
         // returns 0 if prisoner did not find their number in the alloted number of steps
-        if (steps > num_prisoners / 2) { //QUESTION: IS THIS WHAT I WANT HERE
+        if (steps > num_prisoners / 2) {
             return 0;
         } else {
             temp_next = room[temp_next];
@@ -169,7 +197,7 @@ bool all_find_numbers(int num_prisoners, int room[]) {
         free_prisoners[i] = 0;
     }
 
-    while (num_success < num_prisoners/2) { //QUESTION: IS THIS WHAT I WANT HERE
+    while (num_success < num_prisoners/2) {
         //if prisoner doesn't find their number: return 0
         if (!prisoner_finds_number(target, num_prisoners, &num_success, free_prisoners, room)) {
             return 0;
