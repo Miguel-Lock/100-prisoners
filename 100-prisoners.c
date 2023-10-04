@@ -4,10 +4,9 @@ Programmer: Miguel Lock
 
 Class: CSC-310
 Instructor: Dr. John Coleman
-Date: 10/03/23
+Date: 10/04/23
 Version: 1.0
 
-Chance: .31183
 Extra Credit:
 1. Allows user input for the number of prisoners
 2. Allows user input for the number of iterations
@@ -37,7 +36,7 @@ static unsigned long mt[MT_N];
 static int mti = MT_N + 1;
 
 bool user_wants_calc();
-double calc_probability();
+void calc_probability();
 int get_num_prisoners();
 int get_num_iterations();
 void swap(int *a, int *b);
@@ -52,7 +51,6 @@ void init_genrand(unsigned long s);
 int main() {
     if (user_wants_calc()) {
         calc_probability();
-        return 0;
     }
 
     int num_prisoners, iterations, escapes = 0;
@@ -60,6 +58,7 @@ int main() {
 
     init_genrand((unsigned long)time(NULL)); //seeds mersene twister
 
+    printf("\nBEGINNING THE 100 PRISONERS PROBLEM\n");
     num_prisoners = get_num_prisoners();
     int room[num_prisoners+1];
 
@@ -75,12 +74,14 @@ int main() {
     chance_escapes = (double)escapes / iterations;
 
     // displays results
-    printf("\nEscapes: %d\nIterations: %d\n", escapes, iterations);
-    printf("Chance of escaping: %f", chance_escapes);
+    printf("\nEscapes:    %d\nIterations: %d\n", escapes, iterations);
+    printf("Simulated chance of escaping: %f", chance_escapes);
 
     return 0;
 }
 
+
+// asks user if they want to calculate the statistical probability of the problem
 bool user_wants_calc() {
     int calculate;
 
@@ -88,30 +89,35 @@ bool user_wants_calc() {
     printf("Enter 0 if you want to run a simulation of the 100 prisoner problem.\n>");
     scanf("%d", &calculate);
     if (calculate == 1) {
-        return 1;
+        return 1; //retuns 1 if user wants agrees to calculate the statistical probability
     }
     return 0;
 }
 
-double calc_probability() {
-    double sum = 0, half_p = get_num_prisoners() / 2;
+// calculates the exact statistical probability of the 100 prisoners problem using the
+// proof's algorithm (not the random function in a simulation)
+void calc_probability() {
+    double sum = 0, half_p;
+    int prisoners = get_num_prisoners();
+    
+    half_p = prisoners / 2;
 
     for (int i=1; i<half_p+1; i++) {
         sum += 1 / (i + half_p);
     }
-    printf("%lf\n", 1 - sum);
+    printf("Mathematical chance of %d prisoners escaping: %lf\n", prisoners, 1 - sum);
 }
 
 // gets user input for num_prisoners
 // 100 < num_prisoners < 2000, && num_prisoners is multiple of 100
 int get_num_prisoners() {
     int num_prisoners = 0;
-    while (num_prisoners < 100 || num_prisoners > 2000 || num_prisoners % 100 != 0) {
-        printf("Enter the number of prisoners?\n(Suggested: 100): ");
+    while (num_prisoners < 2 || num_prisoners > 2000 || num_prisoners % 2 != 0) {
+        printf("Enter the number of prisoners\n(Suggested: 100): ");
         scanf("%d", &num_prisoners);
 
-        if (num_prisoners < 100 || num_prisoners > 2000 || num_prisoners % 100 != 0) {
-            printf("Error: Number of prisoners must be a multiple of 100 from 100-2000.\n\n");
+        if (num_prisoners < 2 || num_prisoners > 2000 || num_prisoners % 2 != 0) {
+            printf("Error: Number of prisoners must be a multiple of 2 from 2-2000.\n\n");
         }
     }
     printf("\n\n");
