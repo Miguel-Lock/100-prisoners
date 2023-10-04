@@ -13,12 +13,12 @@ Extra Credit:
 3. Added my own PRNG (mersene twister) (source: chatGPT)
 4. Optimized program
   a. If a prisoner finds their number in a chain
-  of 20 numbers, all prisoners find their number
+  of numbers, all the prisoners in that chain find their number
   b. If >50 prisoners find their number in their
   loops, all prisoners find their number.
-5. Added option for user to test the mathematical
+5. Added option for the user to test the mathematical
 statistical probability of the 100 prisoner problem
-(without running the simulation that relies on random values)
+(without running the simulation which relies on random values)
 *************************/
 #include <stdio.h>
 #include <stdbool.h>
@@ -49,16 +49,17 @@ void init_genrand(unsigned long s);
 
 
 int main() {
+    int num_prisoners, iterations, escapes = 0;
+    double chance_escapes;
+
+    // if the user wants the mathematical probability of the problem: shows result
     if (user_wants_calc()) {
         calc_probability();
     }
 
-    int num_prisoners, iterations, escapes = 0;
-    double chance_escapes;
-
     init_genrand((unsigned long)time(NULL)); //seeds mersene twister
 
-    printf("\nBEGINNING THE 100 PRISONERS PROBLEM\n");
+    printf("\nBEGINNING THE 100 PRISONERS SIMULATION\n");
     num_prisoners = get_num_prisoners();
     int room[num_prisoners+1];
 
@@ -109,7 +110,7 @@ void calc_probability() {
 }
 
 // gets user input for num_prisoners
-// 100 < num_prisoners < 2000, && num_prisoners is multiple of 100
+// 2 < num_prisoners < 2000, && num_prisoners is multiple of 2
 int get_num_prisoners() {
     int num_prisoners = 0;
     while (num_prisoners < 2 || num_prisoners > 2000 || num_prisoners % 2 != 0) {
@@ -130,7 +131,7 @@ int get_num_prisoners() {
 int get_num_iterations() {
     int iterations = 0;
     while (iterations > 10000000 || iterations < 1) {
-        printf("How many times do you want this program to run?\n(Suggested: 1000000): ");
+        printf("How many times do you want this simulation to run?\n(Suggested: 1000000): ");
         scanf("%d", &iterations);
 
         if (iterations > 10000000 || iterations < 1) {
